@@ -2,7 +2,7 @@ using System.Data;
 using ExcelDataReader;
 using Microsoft.Extensions.Options;
 
-namespace AppointmentChatbot.Services;
+namespace AppointmentChatbot.Services.Staff;
 
 /// <summary>
 /// WHAT: Loads staff contact details from a CSV or Excel file.
@@ -13,26 +13,47 @@ namespace AppointmentChatbot.Services;
 /// </summary>
 public class StaffStore : IStaffStore
 {
-    private readonly List<StaffMember> _staff = new();
+    private readonly string? _filePath;
+    private List<StaffMember> _staff = new();
 
     public StaffStore(IOptions<BusinessConfig> config)
     {
-        var filePath = config.Value.StaffFilePath;
+        _filePath = config.Value.StaffFilePath;
+        _staff = Load(_filePath);
+    }
 
-        // Skip loading if no file path configured — not all businesses
-        // need a staff file (single-provider businesses just hardcode one email)
+    /// <summary>
+    /// WHAT: Reads the configured staff file from disk into a list.
+    /// HOW:  Detects file type by extension, parses accordingly. Returns
+    ///       an empty list if no file path is configured — not all
+    ///       businesses need a staff file (single-provider businesses
+    ///       just hardcode one email).
+    /// </summary>
+    private static List<StaffMember> Load(string? filePath)
+    {
         if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
-            return;
+            return new List<StaffMember>();
 
         var extension = Path.GetExtension(filePath).ToLowerInvariant();
 
-        _staff = extension switch
+        return extension switch
         {
             ".csv" => LoadFromCsv(filePath),
             ".xlsx" => LoadFromExcel(filePath),
             _ => throw new InvalidOperationException(
                 $"Unsupported staff file format: {extension}. Use .csv or .xlsx")
         };
+    }
+
+    /// <summary>
+    /// WHAT: Re-reads the staff file from disk and refreshes the in-memory list.
+    /// HOW:  Called after an admin uploads a new staff file, so changes
+    ///       take effect without restarting the app.
+    /// </summary>
+    public Task ReloadAsync()
+    {
+        _staff = Load(_filePath);
+        return Task.CompletedTask;
     }
 
     /// <summary>

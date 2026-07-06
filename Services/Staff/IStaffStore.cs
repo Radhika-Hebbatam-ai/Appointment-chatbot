@@ -1,4 +1,4 @@
-namespace AppointmentChatbot.Services;
+namespace AppointmentChatbot.Services.Staff;
 
 public record StaffMember(string Name, string Email);
 
@@ -22,4 +22,11 @@ public interface IStaffStore
     ///       Returns null if no match found.
     /// </summary>
     string? GetEmailByName(string name);
+
+    /// <summary>
+    /// WHAT: Re-reads the staff file from disk and refreshes the in-memory list.
+    /// HOW:  Called after an admin uploads a new staff file, so changes
+    ///       take effect without restarting the app.
+    /// </summary>
+    Task ReloadAsync();
 }
