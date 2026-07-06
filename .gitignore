@@ -4,3 +4,4 @@ appsettings.Development.json
 google-service-account.json
 *.user
 .vs/
+"*.pdf" 
