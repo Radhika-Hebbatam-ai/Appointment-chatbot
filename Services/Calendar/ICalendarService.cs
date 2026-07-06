@@ -2,7 +2,13 @@ namespace AppointmentChatbot.Services;
 
 public record TimeSlot(DateTime Start, DateTime End);
 
-public record BookedEvent(string EventId, DateTime Start, DateTime End, string CustomerName, string CustomerEmail);
+public record BookedEvent(
+    string EventId,
+    DateTime Start,
+    DateTime End,
+    string CustomerName,
+    string CustomerEmail,
+    string Description = "");
 
 /// <summary>
 /// Calendar provider abstraction — swap the implementation (Google, Outlook, Database)
@@ -34,4 +40,11 @@ public interface ICalendarService
     /// Cancels an existing event.
     /// </summary>
     Task CancelEventAsync(string eventId);
+    /// <summary>
+    /// WHAT: Returns all booked events for a specific date.
+    /// HOW:  Queries the calendar for actual events (not just free/busy),
+    ///       returns a list of BookedEvent records for that day.
+    ///       Used by the evening reminder service to list tomorrow's appointments.
+    /// </summary>
+    Task<List<BookedEvent>> GetEventsForDateAsync(DateTime date);
 }

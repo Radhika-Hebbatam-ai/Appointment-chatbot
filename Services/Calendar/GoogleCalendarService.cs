@@ -127,4 +127,37 @@ public class GoogleCalendarService : ICalendarService
             b.End!.Value
         )).ToList();
     }
+    /// <summary>
+    /// WHAT: Returns all booked events for a specific date.
+    /// HOW:  Queries Google Calendar Events.List API for the day's range,
+    ///       maps results to BookedEvent records ordered by start time.
+    /// </summary>
+    public async Task<List<BookedEvent>> GetEventsForDateAsync(DateTime date)
+    {
+        var dayStart = date.Date;
+        var dayEnd = date.Date.AddDays(1);
+
+        var request = _calendarService.Events.List(_calendarId);
+        request.TimeMinDateTimeOffset = dayStart;
+        request.TimeMaxDateTimeOffset = dayEnd;
+        request.SingleEvents = true;
+        request.OrderBy = EventsResource.ListRequest.OrderByEnum.StartTime;
+
+        var result = await request.ExecuteAsync();
+
+        return result.Items
+            .Where(e => e.Start?.DateTimeDateTimeOffset != null)
+            .Select(e =>
+            {
+                var customerAttendee = e.Attendees?.FirstOrDefault();
+                return new BookedEvent(
+                    e.Id,
+                    e.Start!.DateTimeDateTimeOffset!.Value.DateTime,
+                    e.End!.DateTimeDateTimeOffset!.Value.DateTime,
+                    customerAttendee?.DisplayName ?? "Customer",
+                    customerAttendee?.Email ?? string.Empty
+                );
+            })
+            .ToList();
+    }
 }

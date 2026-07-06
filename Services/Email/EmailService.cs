@@ -148,4 +148,27 @@ public class AzureCommunicationEmailService : IEmailService
                     $"ACS email failed to {recipient.Email}: {operation.Value.Status}");
         }
     }
+    /// <summary>
+    /// WHAT: Sends the evening appointment reminder to the business owner only.
+    /// HOW:  Single recipient (owner) — not sent to customers.
+    ///       Subject and body are pre-built by AppointmentReminderService.
+    /// </summary>
+    public async Task SendEveningReminderAsync(
+        string ownerEmail, string subject, string body)
+    {
+        var message = new EmailMessage(
+            senderAddress: _fromEmail,
+            recipientAddress: ownerEmail,
+            content: new EmailContent(subject)
+            {
+                PlainText = body
+            });
+
+        var operation = await _emailClient.SendAsync(
+            WaitUntil.Completed, message);
+
+        if (operation.Value.Status == EmailSendStatus.Failed)
+            throw new InvalidOperationException(
+                $"ACS reminder email failed: {operation.Value.Status}");
+    }
 }
