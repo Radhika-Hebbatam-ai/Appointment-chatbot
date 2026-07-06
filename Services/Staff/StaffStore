@@ -1,0 +1,122 @@
+using System.Data;
+using ExcelDataReader;
+using Microsoft.Extensions.Options;
+
+namespace AppointmentChatbot.Services;
+
+/// <summary>
+/// WHAT: Loads staff contact details from a CSV or Excel file.
+/// HOW:  Detects file type by extension, parses accordingly using
+///       built-in StreamReader for CSV and ExcelDataReader for .xlsx.
+///       Stores results in memory — business owner updates the file
+///       and restarts the app to pick up changes. No DB needed.
+/// </summary>
+public class StaffStore : IStaffStore
+{
+    private readonly List<StaffMember> _staff = new();
+
+    public StaffStore(IOptions<BusinessConfig> config)
+    {
+        var filePath = config.Value.StaffFilePath;
+
+        // Skip loading if no file path configured — not all businesses
+        // need a staff file (single-provider businesses just hardcode one email)
+        if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+            return;
+
+        var extension = Path.GetExtension(filePath).ToLowerInvariant();
+
+        _staff = extension switch
+        {
+            ".csv" => LoadFromCsv(filePath),
+            ".xlsx" => LoadFromExcel(filePath),
+            _ => throw new InvalidOperationException(
+                $"Unsupported staff file format: {extension}. Use .csv or .xlsx")
+        };
+    }
+
+    /// <summary>
+    /// WHAT: Returns all loaded staff members.
+    /// HOW:  Simple read from in-memory list — no file I/O at query time.
+    /// </summary>
+    public IReadOnlyList<StaffMember> GetAll() => _staff.AsReadOnly();
+
+    /// <summary>
+    /// WHAT: Finds a staff member's email by name.
+    /// HOW:  Case-insensitive contains match — so "dr smith" matches
+    ///       "Dr Smith" and "DR SMITH". Returns null if not found.
+    /// </summary>
+    public string? GetEmailByName(string name) =>
+        _staff.FirstOrDefault(s =>
+            s.Name.Contains(name, StringComparison.OrdinalIgnoreCase))?.Email;
+
+    /// <summary>
+    /// WHAT: Parses a CSV file into a list of StaffMembers.
+    /// HOW:  Reads line by line, skips the header row, splits on comma.
+    ///       Expected format: Name,Email (one staff member per line)
+    ///       e.g. "Dr Smith,drsmith@clinic.com"
+    /// </summary>
+    private static List<StaffMember> LoadFromCsv(string filePath)
+    {
+        var staff = new List<StaffMember>();
+        var lines = File.ReadAllLines(filePath);
+
+        // Skip header row (first line)
+        foreach (var line in lines.Skip(1))
+        {
+            if (string.IsNullOrWhiteSpace(line)) continue;
+
+            var parts = line.Split(',', 2);
+            if (parts.Length < 2) continue;
+
+            var name = parts[0].Trim();
+            var email = parts[1].Trim();
+
+            if (!string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(email))
+                staff.Add(new StaffMember(name, email));
+        }
+
+        return staff;
+    }
+
+    /// <summary>
+    /// WHAT: Parses an Excel (.xlsx) file into a list of StaffMembers.
+    /// HOW:  Uses ExcelDataReader to open the first worksheet,
+    ///       reads rows into a DataTable, skips the header row,
+    ///       maps column 0 = Name, column 1 = Email.
+    ///       Expected format: same as CSV but in Excel columns A and B.
+    /// </summary>
+    private static List<StaffMember> LoadFromExcel(string filePath)
+    {
+        var staff = new List<StaffMember>();
+
+        // Required for ExcelDataReader to work on non-Windows or .NET Core
+        System.Text.Encoding.RegisterProvider(
+            System.Text.CodePagesEncodingProvider.Instance);
+
+        using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read);
+        using var reader = ExcelReaderFactory.CreateReader(stream);
+
+        var dataSet = reader.AsDataSet(new ExcelDataSetConfiguration
+        {
+            ConfigureDataTable = _ => new ExcelDataTableConfiguration
+            {
+                // First row is the header (Name, Email) — skip it
+                UseHeaderRow = true
+            }
+        });
+
+        // Read from the first worksheet only
+        var table = dataSet.Tables[0];
+        foreach (DataRow row in table.Rows)
+        {
+            var name = row[0]?.ToString()?.Trim();
+            var email = row[1]?.ToString()?.Trim();
+
+            if (!string.IsNullOrWhiteSpace(name) && !string.IsNullOrWhiteSpace(email))
+                staff.Add(new StaffMember(name, email));
+        }
+
+        return staff;
+    }
+}
