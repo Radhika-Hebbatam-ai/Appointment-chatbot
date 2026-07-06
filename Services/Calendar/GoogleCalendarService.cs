@@ -112,19 +112,20 @@ public class GoogleCalendarService : ICalendarService
 
     private async Task<List<TimeSlot>> GetBusyTimesAsync(DateTime rangeStart, DateTime rangeEnd)
     {
+        // Updated to use non-obsolete DateTimeOffset properties:
         var freeBusyRequest = new FreeBusyRequest
         {
-            TimeMin = rangeStart,
-            TimeMax = rangeEnd,
+            TimeMinDateTimeOffset = rangeStart,
+            TimeMaxDateTimeOffset = rangeEnd,
             Items = new List<FreeBusyRequestItem> { new() { Id = _calendarId } }
         };
-
         var freeBusyResponse = await _calendarService.Freebusy.Query(freeBusyRequest).ExecuteAsync();
         var busy = freeBusyResponse.Calendars[_calendarId].Busy;
 
+        // Updated:
         return busy.Select(b => new TimeSlot(
-            b.Start!.Value,
-            b.End!.Value
+            b.StartDateTimeOffset!.Value.DateTime,
+            b.EndDateTimeOffset!.Value.DateTime
         )).ToList();
     }
     /// <summary>

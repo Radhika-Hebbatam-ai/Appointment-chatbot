@@ -237,7 +237,7 @@ public class OutlookCalendarService : ICalendarService
         };
 
         var response = await _graphClient.Users[_userId].Calendar
-            .GetSchedule.PostAsync(requestBody);
+     .GetSchedule.PostAsGetSchedulePostResponseAsync(requestBody);
 
         return response?.Value?
             .SelectMany(s => s.ScheduleItems ?? new List<ScheduleItem>())
