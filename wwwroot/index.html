@@ -1,160 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Riverside Family Clinic</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #FAFAF7;
-            color: #24302F;
-        }
-
-        header {
-            background: #14424A;
-            color: #FAFAF7;
-            padding: 28px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            font-size: 22px;
-            font-weight: 700;
-        }
-
-        header p {
-            font-size: 13px;
-            opacity: 0.75;
-            margin-top: 4px;
-        }
-
-        nav {
-            background: #0F3039;
-            padding: 0 40px;
-            display: flex;
-            gap: 24px;
-        }
-
-        nav a {
-            color: #FAFAF7;
-            text-decoration: none;
-            font-size: 14px;
-            padding: 14px 0;
-            opacity: 0.75;
-            border-bottom: 2px solid transparent;
-        }
-
-        nav a:hover {
-            opacity: 1;
-            border-bottom-color: #C8963E;
-        }
-
-        .hero {
-            background: linear-gradient(135deg, #14424A 0%, #1a5c6b 100%);
-            color: #FAFAF7;
-            padding: 64px 40px;
-            text-align: center;
-        }
-
-        .hero h2 {
-            font-size: 32px;
-            margin-bottom: 12px;
-        }
-
-        .hero p {
-            font-size: 16px;
-            opacity: 0.85;
-            max-width: 520px;
-            margin: 0 auto 28px;
-        }
-
-        .hero-btn {
-            background: #C8963E;
-            color: white;
-            border: none;
-            padding: 14px 32px;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        main {
-            max-width: 900px;
-            margin: 48px auto;
-            padding: 0 24px;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 24px;
-        }
-
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 28px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
-        }
-
-        .card-icon {
-            font-size: 28px;
-            margin-bottom: 12px;
-        }
-
-        .card h3 {
-            font-size: 16px;
-            margin-bottom: 8px;
-            color: #14424A;
-        }
-
-        .card p {
-            font-size: 14px;
-            color: #6B7B7A;
-            line-height: 1.6;
-        }
-
-        .demo-note {
-            max-width: 900px;
-            margin: 0 auto 32px;
-            padding: 14px 24px;
-            background: #FFF8E7;
-            border-left: 4px solid #C8963E;
-            font-size: 13px;
-            color: #5A4A2A;
-            font-family: monospace;
-        }
-
-        footer {
-            background: #14424A;
-            color: #FAFAF7;
-            text-align: center;
-            padding: 24px;
-            font-size: 13px;
-            opacity: 0.8;
-            margin-top: 48px;
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Riverside Family Clinic</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #FAFAF7; color: #24302F; }
+  header { background: #14424A; color: #FAFAF7; padding: 28px 40px; display: flex; justify-content: space-between; align-items: center; }
+  header h1 { font-size: 22px; font-weight: 700; }
+  header p { font-size: 13px; opacity: 0.75; margin-top: 4px; }
+  nav { background: #0F3039; padding: 0 40px; display: flex; gap: 24px; }
+  nav a { color: #FAFAF7; text-decoration: none; font-size: 14px; padding: 14px 0; opacity: 0.75; border-bottom: 2px solid transparent; }
+  nav a:hover { opacity: 1; border-bottom-color: #C8963E; }
+  .hero { background: linear-gradient(135deg, #14424A 0%, #1a5c6b 100%); color: #FAFAF7; padding: 64px 40px; text-align: center; }
+  .hero h2 { font-size: 32px; margin-bottom: 12px; }
+  .hero p { font-size: 16px; opacity: 0.85; max-width: 520px; margin: 0 auto 28px; }
+  .hero-btn { background: #C8963E; color: white; border: none; padding: 14px 32px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  main { max-width: 900px; margin: 48px auto; padding: 0 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+  .card { background: white; border-radius: 12px; padding: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+  .card-icon { font-size: 28px; margin-bottom: 12px; }
+  .card h3 { font-size: 16px; margin-bottom: 8px; color: #14424A; }
+  .card p { font-size: 14px; color: #6B7B7A; line-height: 1.6; }
+  .demo-note { max-width: 900px; margin: 0 auto 32px; padding: 14px 24px; background: #FFF8E7; border-left: 4px solid #C8963E; font-size: 13px; color: #5A4A2A; font-family: monospace; }
+  footer { background: #14424A; color: #FAFAF7; text-align: center; padding: 24px; font-size: 13px; opacity: 0.8; margin-top: 48px; }
+</style>
 </head>
-
 <body>
-
-    <header>
-        <div>
-            <h1>Riverside Family Clinic</h1>
-            <p>Your health, our priority</p>
-        </div>
-    </header>
-
-    <nav>
-        <a href="#">Home</a>
-        <a href="#">Services</a>
-        <a href="#">Our
+<header>
+  <div>
+    <h1>Riverside Family Clinic</h1>
+    <p>Your health, our priority</p>
+  </div>
+</header>
+<nav>
+  <a href="#">Home</a>
+  <a href="#">Services</a>
+  <a href="#">Our Team</a>
+  <a href="#">Contact</a>
+</nav>
+<div class="hero">
+  <h2>Book Your Appointment Online</h2>
+  <p>Use our AI-powered booking assistant to find an available slot, get pricing information, and confirm your appointment instantly.</p>
+  <button class="hero-btn" onclick="document.getElementById('appt-launcher').click()">Book Now</button>
+</div>
+<div class="demo-note">
+  Demo page — the chat bubble (bottom-right) is the entire integration. A real business adds one script tag to their existing website.
+</div>
+<main>
+  <div class="card"><div class="card-icon">🩺</div><h3>General Consultation</h3><p>See one of our experienced GPs for a comprehensive health assessment.</p></div>
+  <div class="card"><div class="card-icon">🩸</div><h3>Blood Tests</h3><p>Full range of diagnostic blood tests with fast turnaround times.</p></div>
+  <div class="card"><div class="card-icon">💉</div><h3>Vaccinations</h3><p>Routine and travel vaccinations for all ages.</p></div>
+  <div class="card"><div class="card-icon">🦷</div><h3>Dental Cleaning</h3><p>Professional cleaning and oral health checks.</p></div>
+  <div class="card"><div class="card-icon">📋</div><h3>Specialist Referrals</h3><p>Fast-tracked referrals to trusted specialists.</p></div>
+  <div class="card"><div class="card-icon">🔬</div><h3>Follow-up Consultations</h3><p>Shorter appointments for existing patients.</p></div>
+</main>
+<footer>© 2026 Riverside Family Clinic · 123 Main Street, Carterton, Wairarapa</footer>
+<script src="/widget.js" data-api-url="/api/chat" data-accent="#14424A"></script>
+</body>
+</html>
