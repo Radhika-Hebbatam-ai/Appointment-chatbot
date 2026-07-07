@@ -5,3 +5,5 @@ google-service-account.json
 *.user
 .vs/
 "*.pdf" 
+google-service-account.json
+google-service-account.json.json

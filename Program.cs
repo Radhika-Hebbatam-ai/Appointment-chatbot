@@ -87,6 +87,7 @@ using (var scope = app.Services.CreateScope())
 
 // ── Middleware Pipeline ────────────────────────────────────────────────────
 app.UseCors("AllowWidget");
+app.UseDefaultFiles();
 app.UseStaticFiles();   // serves wwwroot/ (widget.js, index.html, upload.html)
 app.MapControllers();
 
