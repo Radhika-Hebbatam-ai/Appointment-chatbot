@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME:radhika-appointment-chatbot    # TODO: replace with your actual App Service name
+  AZURE_WEBAPP_NAME:'radhika-appointment-chatbot'    # TODO: replace with your actual App Service name
   DOTNET_VERSION: '8.0.x'
   PROJECT_PATH: './AppointmentChatbot.csproj'     # TODO: replace with path to your main .csproj
 
